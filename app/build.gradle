@@ -40,8 +40,8 @@ android {
 		applicationId swvProps.getProperty('build.application.id', 'w2a.W2Apowu.xiaoshuw.com')
 		minSdk swvProps.getProperty('build.sdk.min', '21').toInteger()
 		targetSdk swvProps.getProperty('build.sdk.compile', '35').toInteger()
-		versionCode swvProps.getProperty('build.version.code', '8').toInteger()
-		versionName swvProps.getProperty('build.version.name', '1.8')
+		versionCode swvProps.getProperty('build.version.code', '9').toInteger()
+		versionName swvProps.getProperty('build.version.name', '1.0.9')
 		multiDexEnabled true // enable if method count exceeds 64K
 	}
 
