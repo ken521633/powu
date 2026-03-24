@@ -1,14 +1,15 @@
 name: Build Release AAB
 
-# 这里的修改最关键：加入 push 触发器
 on:
   push:
-    branches: [ "**" ] # 只要你在任何分支保存了代码，立刻自动打包！
+    branches: [ "**" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15 # 终极保险：最多跑15分钟，超时自动掐断报错
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,7 +25,8 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Release AAB
-        run: ./gradlew bundleRelease
+        # 核心修改：强制输出所有日志详情，拒绝后台死锁卡顿！
+        run: ./gradlew bundleRelease --no-daemon --stacktrace --console=plain
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
