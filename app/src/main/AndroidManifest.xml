@@ -23,11 +23,11 @@
 
 	<supports-screens
 		android:anyDensity="true"
-		android:resizeable="true"
+		android:resizeable="false"
 		android:smallScreens="true"
-		android:largeScreens="true"
-		android:normalScreens="true"
-		android:xlargeScreens="true" />
+		android:largeScreens="false"
+		android:normalScreens="false"
+		android:xlargeScreens="false" />
 
 	<!-- Essential Permissions -->
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -58,7 +58,7 @@
 	<uses-feature android:name="android.hardware.location.gps" android:required="false" />
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
 	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-
+	<uses-feature android:name="android.hardware.telephony" android:required="true" />
 	<application
 		android:icon="@mipmap/ic_launcher"
 		android:name=".SWVContext$App"
