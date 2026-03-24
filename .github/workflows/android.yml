@@ -1,6 +1,9 @@
 name: Build Release AAB
 
+# 这里的修改最关键：加入 push 触发器
 on:
+  push:
+    branches: [ "**" ] # 只要你在任何分支保存了代码，立刻自动打包！
   workflow_dispatch:
 
 jobs:
