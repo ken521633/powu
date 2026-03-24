@@ -1,0 +1,37 @@
+name: Build Release AAB
+
+# 允许我们在网页上点击按钮手动运行打包
+on:
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. 拉取你的代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. 配置 Java 17 环境 (现代 Android 编译必备)
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    # 3. 给打包工具赋予执行权限
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # 4. 执行核心打包命令 (生成未签名的 AAB)
+    - name: Build Release AAB
+      run: ./gradlew bundleRelease
+
+    # 5. 把打包好的 AAB 提取出来，放到网页上供你下载
+    - name: Upload AAB Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: powu-release-aab
+        path: app/build/outputs/bundle/release/app-release.aab
