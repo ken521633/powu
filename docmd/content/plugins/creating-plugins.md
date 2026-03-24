@@ -8,11 +8,11 @@ The Smart WebView plugin architecture allows you to extend the application's nat
 
 ## 1. Create the Plugin Class
 
-1.  Create a new Java class inside the `app/src/main/java/mgks/os/swv/plugins/` directory.
+1.  Create a new Java class inside the `app/src/main/java/w2a/W2Apowu/xiaoshuw/com/plugins/` directory.
 2.  Make your class implement the `PluginInterface`.
 
     ```java
-    package mgks.os.swv.plugins;
+    package w2a.W2Apowu.xiaoshuw.com.plugins;
 
     import android.app.Activity;
     import android.content.Intent;
@@ -20,8 +20,8 @@ The Smart WebView plugin architecture allows you to extend the application's nat
     import androidx.annotation.NonNull;
     import java.util.Map;
 
-    import mgks.os.swv.Functions;
-    import mgks.os.swv.PluginInterface;
+    import w2a.W2Apowu.xiaoshuw.com.Functions;
+    import w2a.W2Apowu.xiaoshuw.com.PluginInterface;
 
     public class MyCustomPlugin implements PluginInterface {
 

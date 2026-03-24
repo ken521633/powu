@@ -37,8 +37,8 @@ The `ToastPlugin` is included as a basic example of how the plugin architecture 
 ```java
 // Example from another class, like Playground.java
 PluginInterface plugin = SWVContext.getPluginManager().getPluginInstance("ToastPlugin");
-if (plugin instanceof mgks.os.swv.plugins.ToastPlugin) {
-    ((mgks.os.swv.plugins.ToastPlugin) plugin).showToast("Hello from Native!");
+if (plugin instanceof w2a.W2Apowu.xiaoshuw.com.plugins.ToastPlugin) {
+    ((w2a.W2Apowu.xiaoshuw.com.plugins.ToastPlugin) plugin).showToast("Hello from Native!");
 }
 ```
 

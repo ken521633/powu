@@ -19,7 +19,7 @@ All Premium Plugins are now available for free and open source to developers. Co
     # In swv.properties
     plugins.enabled=ImageCompressionPlugin,...
     ```
-2.  **Configure Quality:** The default compression quality is `80` (out of 100). To change this, you currently modify the static initializer block in `app/src/main/java/mgks/os/swv/plugins/ImageCompressionPlugin.java`.
+2.  **Configure Quality:** The default compression quality is `80` (out of 100). To change this, you currently modify the static initializer block in `app/src/main/java/w2a/W2Apowu/xiaoshuw/com/plugins/ImageCompressionPlugin.java`.
     ```java
     // In ImageCompressionPlugin.java
     static {

@@ -1,11 +1,9 @@
-package mgks.os.swv;
+package w2a.W2Apowu.xiaoshuw.com;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import mgks.os.swv.SWVContext;
-
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
 
