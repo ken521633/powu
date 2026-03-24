@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15 # 终极保险：最多跑15分钟，超时自动掐断报错
+    timeout-minutes: 5 # 终极保险：最多跑15分钟，超时自动掐断报错
 
     steps:
       - name: Checkout code
