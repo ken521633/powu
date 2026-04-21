@@ -15,3 +15,10 @@
 # -keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 # }
+# 穿山甲 SDK 核心规则
+-keep class com.bytedance.sdk.** { *; }
+
+# 因为你用到了 JavascriptInterface 桥接，建议也加上这一行，防止你的 WebAppInterface 被混淆
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
