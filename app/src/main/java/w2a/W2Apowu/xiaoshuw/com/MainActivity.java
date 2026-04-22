@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 .appId(appId)
                 .useTextureView(true)
                 .titleBarTheme(TTAdConstant.TITLE_BAR_THEME_DARK)
-                .debugLog(true)
+                .debugLog(shouldEnablePangleDebugLog())
                 .build();
 
         Log.d(TAG, "初始化穿山甲 SDK, appId=" + appId + ", testMode=" + isPangleTestMode());
@@ -200,10 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onUserEarnedReward(PAGRewardItem rewardItem) {
                         Log.d(TAG, "看完广告，通知 JS 发奖");
                         updateDebugOverlay("reward_earned", slotId, "callback=reward");
-                        runOnUiThread(() -> webView.evaluateJavascript(
-                                "window.AD && typeof window.AD.reward === 'function' && window.AD.reward();",
-                                null
-                        ));
+                        notifyWebRewardGranted();
                     }
 
                     @Override
@@ -276,6 +273,20 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isPangleTestMode() {
         return Boolean.parseBoolean(getSwvProperties().getProperty("ad.pangle.test.mode", "false"));
+    }
+
+    private boolean shouldEnablePangleDebugLog() {
+        return isPangleTestMode() || Boolean.parseBoolean(getSwvProperties().getProperty("debug.mode", "false"));
+    }
+
+    private void notifyWebRewardGranted() {
+        runOnUiThread(() -> webView.evaluateJavascript(
+                "(function(){"
+                        + "if(window.AD&&typeof window.AD.reward==='function'){window.AD.reward();return;}"
+                        + "if(typeof window.onAdRewardGranted==='function'){window.onAdRewardGranted(true);}"
+                        + "})();",
+                null
+        ));
     }
 
     private String getPangleAppId() {
