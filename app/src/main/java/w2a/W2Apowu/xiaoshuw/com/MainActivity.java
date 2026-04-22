@@ -7,12 +7,15 @@ import android.webkit.WebViewClient;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
-import com.bytedance.sdk.openadsdk.AdSlot;
-import com.bytedance.sdk.openadsdk.TTAdConfig;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
-import com.bytedance.sdk.openadsdk.TTAdNative;
-import com.bytedance.sdk.openadsdk.TTAdSdk;
-import com.bytedance.sdk.openadsdk.TTRewardVideoAd;
+import com.bytedance.sdk.openadsdk.api.init.PAGConfig;
+import com.bytedance.sdk.openadsdk.api.init.PAGSdk;
+import com.bytedance.sdk.openadsdk.api.model.PAGErrorModel;
+import com.bytedance.sdk.openadsdk.api.reward.PAGRewardItem;
+import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAd;
+import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdInteractionCallback;
+import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdLoadCallback;
+import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedRequest;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
@@ -42,17 +45,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPangleSDK() {
-        TTAdConfig config = new TTAdConfig.Builder()
+        PAGConfig config = new PAGConfig.Builder()
                 .appId("8813818") 
                 .useTextureView(true)
                 .titleBarTheme(TTAdConstant.TITLE_BAR_THEME_DARK)
-                .allowShowNotify(true)
-                .debug(true) 
-                .directDownloadNetworkType(TTAdConstant.NETWORK_STATE_WIFI)
+                .debugLog(true)
                 .build();
         
-        TTAdSdk.init(this, config);
-        TTAdSdk.start(new TTAdSdk.Callback() {
+        PAGSdk.init(this, config, new PAGSdk.PAGInitCallback() {
             @Override
             public void success() { Log.d("AdLog", "穿山甲 SDK 启动成功"); }
             @Override
@@ -70,40 +70,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadRewardAd(String slotId) {
-        TTAdNative adNative = TTAdSdk.getAdManager().createAdNative(this);
-        AdSlot adSlot = new AdSlot.Builder().setCodeId(slotId).build();
-
-        adNative.loadRewardVideoAd(adSlot, new TTAdNative.RewardVideoAdListener() {
+        PAGRewardedRequest request = new PAGRewardedRequest();
+        PAGRewardedAd.loadAd(slotId, request, new PAGRewardedAdLoadCallback() {
             @Override
-            public void onError(int code, String message) {
+            public void onError(PAGErrorModel error) {
+                String message = error != null ? error.getErrorMessage() : "unknown error";
                 Log.e("AdLog", "加载失败: " + message);
                 Toast.makeText(MainActivity.this, "广告加载失败: " + message, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onRewardVideoAdLoad(TTRewardVideoAd ad) {
+            public void onAdLoaded(PAGRewardedAd ad) {
                 Log.d("AdLog", "加载成功，开始播放");
-                ad.showRewardVideoAd(MainActivity.this);
-                
-                ad.setRewardAdInteractionListener(new TTRewardVideoAd.RewardAdInteractionListener() {
+                ad.setAdInteractionCallback(new PAGRewardedAdInteractionCallback() {
                     @Override
-                    public void onRewardVerify(boolean rewardVerify, int rewardAmount, String rewardName, int errorCode, String errorMsg) {
-                        if (rewardVerify) {
-                            Log.d("AdLog", "看完广告，通知 JS 发奖");
-                            // 关键：这里直接调用你 JS 里 window.AD 的 reward 方法
-                            runOnUiThread(() -> webView.evaluateJavascript("javascript:window.AD.reward();", null));
-                        }
+                    public void onUserEarnedReward(PAGRewardItem rewardItem) {
+                        Log.d("AdLog", "看完广告，通知 JS 发奖");
+                        runOnUiThread(() -> webView.evaluateJavascript(
+                                "window.AD && typeof window.AD.reward === 'function' && window.AD.reward();",
+                                null
+                        ));
                     }
-                    @Override public void onAdShow() {}
-                    @Override public void onAdVideoBarClick() {}
-                    @Override public void onAdClose() {}
-                    @Override public void onVideoComplete() {}
-                    @Override public void onVideoError() {}
-                    @Override public void onSkippedVideo() {}
+
+                    @Override
+                    public void onAdShowFailed(PAGErrorModel error) {
+                        String message = error != null ? error.getErrorMessage() : "unknown error";
+                        Log.e("AdLog", "播放失败: " + message);
+                        Toast.makeText(MainActivity.this, "广告播放失败: " + message, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onUserEarnedRewardFail(PAGErrorModel error) {
+                        String message = error != null ? error.getErrorMessage() : "unknown error";
+                        Log.e("AdLog", "奖励发放失败: " + message);
+                    }
                 });
+                runOnUiThread(() -> ad.show(MainActivity.this));
             }
-            @Override public void onRewardVideoCached() {}
-            @Override public void onRewardVideoCached(TTRewardVideoAd ad) {}
         });
     }
 
